@@ -7,7 +7,7 @@ if(isset($_SESSION["username"])){
 
 include_once("../constants.php");
 
-if(isset($_POST["firstname"]) && $_POST["firstname"] !== "" &&
+if(isset($_POST["firstname"]) && $_POST["firstname"] !== "" && //checking if all the information are correctly set
 isset($_POST["lastname"]) && $_POST["lastname"] !== "" &&
 isset($_POST["username"]) && $_POST["username"] !== "" &&
 isset($_POST["displayname"]) && $_POST["displayname"] !== ""){
@@ -32,6 +32,26 @@ isset($_POST["displayname"]) && $_POST["displayname"] !== ""){
 
         $empty_obj = new stdClass();
 
+        /*
+        "data" = {
+            "svcinfo": {
+                "did": 1,
+                "protocol": "FIDO2_0",
+                "authtype": "PASSWORD",
+                "svcusername": "svcfidouser",
+                "svcpassword": "Abcd1234!"
+            },
+            "payload": {
+                "username": "johndoe",
+                "displayname": "johndoe_dn",
+                "options": {
+                    "attestation": "direct"
+                },
+                "extensions": "{}"
+            }
+        }
+        
+        */
         $data = array(
             'svcinfo' => SVCINFO,
             'payload' => array(
@@ -40,24 +60,50 @@ isset($_POST["displayname"]) && $_POST["displayname"] !== ""){
                 'options' => array(
                     'attestation' => 'direct',
                 ),
-                'extensions' => $empty_obj,
+                'extensions' => "{}",
             ),
         );
+        console_log($data);
         $post_data = json_encode($data);
-        $url = SKFS_HOSTNAME . SKFS_PREREGISTRATION_PATH . ":" . SKFS_PORT;
+        $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_PREREGISTRATION_PATH;
         
         $crl = curl_init($url);
         curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($crl, CURLINFO_HEADER_OUT, true);
         curl_setopt($crl, CURLOPT_POST, true);
         curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($crl, CURLOPT_PORT, SKFS_PORT);
+        curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //setting the path of server certificate
         curl_setopt($crl, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Content-Length: ' . strlen($post_data)
         ));
+
+
+
+
+        //verbose
+        curl_setopt($crl, CURLOPT_VERBOSE, true);
+        $streamVerboseHandle = fopen('php://temp', 'w+');
+        curl_setopt($crl, CURLOPT_STDERR, $streamVerboseHandle);
+        $report = curl_getinfo($crl);
+        console_log($report);
+
+
+
         $result = curl_exec($crl);
         if($result === false){ //err
             console_log("false");
+
+
+            //verbose
+            printf("cUrl error (#%d): %s<br>\n", curl_errno($crl), htmlspecialchars(curl_error($crl)));
+            rewind($streamVerboseHandle);
+            $verboseLog = stream_get_contents($streamVerboseHandle);
+            console_log($verboseLog);
+            /*echo 'cUrl verbose information:\n',
+                '<pre>', htmlspecialchars($verboseLog), '</pre>\n';*/
+
         }
         else{ //not err
             console_log($result);

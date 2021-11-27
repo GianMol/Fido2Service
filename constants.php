@@ -10,8 +10,9 @@ const AUTHTYPE = "PASSWORD";
 const SVCUSERNAME = "svcfidouser";
 const SVCPASSWORD = "Abcd1234!";
 
-
-define('SKFS_HOSTNAME', 'centos.home');
+define('CERTIFICATE_PATH', 'C:\xampp\htdocs\fido2service\Fido2Service\certificate\centos-home.pem');
+define('PRE_SKFS_HOSTNAME', 'https://');
+define('SKFS_HOSTNAME', 'centos.home');//192.168.1.65
 define('SKFS_PORT', '8181');
 define('SVCINFO', array(
     'did' => DID,
