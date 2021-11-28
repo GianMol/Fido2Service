@@ -35,5 +35,16 @@ function console_log($output, $with_script_tags = true){
     echo '<script>'.$js_code.'</script>';
 }
 
+function alert($msg) {
+    echo "<script type='text/javascript'>alert('$msg');</script>";
+}
 
+
+/*
+if(isset($decoded_result) && $decoded_result !== null){
+    $resp = json_encode($decoded_result);
+    $params = array("registration", $resp);
+    $jsparams = json_encode($params, JSON_HEX_TAG | JSON_HEX_AMP);
+    //echo "<!-- <script>createCredentials.apply(null, $jsparams)</script>"; -->
+}*/
 ?>
