@@ -124,16 +124,16 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     $result = curl_exec($crl); //executing the request
     
     if($result === false){ //this is the error case
-        $msg = "Registration failed";
+        $msg = "Register endpoint not found";
         $err = array(
-            "status" => "500",
+            "status" => "404", //Not found
             'error' => $msg
         );
         echo json_encode($err);}
     else{ //this is the success case
         if(str_contains(strtolower(json_encode($result)), 'error')){
             $err = array(
-                "status" => "500",
+                "status" => "500", //Internal server error
                 'error' => $result
             );
             echo json_encode($err);
@@ -153,9 +153,9 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
         if(mysqli_num_rows($res) === 0){ //if no row is returned
             mysqli_free_result($res); //freeing results and closing database
             mysqli_close($conn);
-            $msg = "DB error";
+            $msg = "Internal server error";
             $err = array(
-                "status" => "500",
+                "status" => "500", //Internal server error
                 'statusText' => $msg
             );
             echo json_encode($err);
@@ -175,9 +175,9 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     }
 }
 else{
-    $msg = "Missing parameters";
+    $msg = "Unprocessable Entity";
     $err = array(
-        "status" => "400",
+        "status" => "422", //Unprocessable Entity
         "statusText" => $msg
     );
     echo json_encode($err);
