@@ -101,7 +101,7 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
         })
         .then((register_json) => {
             if(register_json.status === "200"){
-                //window.location.replace(window.location.protocol + "//" + window.location.host + "/login");
+                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/php/login.php");
                 alert("Registration complete");
             } else {
                 alert(register_json.status + ": " +  register_json.statusText);

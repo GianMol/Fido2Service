@@ -86,7 +86,8 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
     .then(credResp => {
         let credResponse = responseToBase64(credResp);
         credResponse.intent = intent;
-        fetch("https://fido2service.strongkey.com/fido2service/Fido2Service/php/api/authenticate.php", {
+        credResponse.username = data.username;
+        fetch("https://fido2service.strongkey.com/fido2service/Fido2Service/php/login.php", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -98,14 +99,15 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
         })
         .then((authenticate_json) => {
             if(authenticate_json.status === "200"){
-                //window.location.replace(window.location.protocol + "//" + window.location.host + "/dashboard");
-                alert("Authentication complete");
-            } else {
-                alert(authenticate_json.status + ": " +  authenticate_json.statusText);
+                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/");
+            }
+            else{
+                error = document.getElementById('username-error');
+                error.textContent = authenticate_json.statusText;
+                error.classList.remove('hidden');
             }
         })
         .catch((err) => {
-            console.log(err);
             alert(err);
         })
     })
@@ -150,8 +152,7 @@ const handle_submit = function(event){
                     error.textContent = "";
                     error.classList.add('hidden');
                 } 
-                console.log(JSON.parse(preauthenticate_json.result).Response);
-                //callFIDO2AuthenticationToken("authentication", JSON.stringify(JSON.parse(preauthenticate_json.result).Response), data);
+                callFIDO2AuthenticationToken("authentication", JSON.stringify(JSON.parse(preauthenticate_json.result).Response), data);
             } else {
                 if(preauthenticate_json.status === "409"){
                     let error = document.getElementById('parameters-error');

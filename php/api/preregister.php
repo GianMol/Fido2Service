@@ -113,7 +113,7 @@ if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !==
             $msg = "Preregister endpoint not found";
             $err = array(
                 "status" => "404",
-                'error' => $msg
+                'statusText' => $msg
             );
             echo json_encode($err);
             /*

@@ -1,5 +1,5 @@
 <?php
-
+    
 ?>
 
 <html>
@@ -17,7 +17,7 @@
     <body>
         <div id="nav-bar">
             <a href="./php/registration.php">Register</a>
-            <a href="https://www.google.com">Login</a>
+            <a href="./php/login.php">Login</a>
             <a href="https://www.google.com">Resource</a>
             <a href="./index.php">Home</a>
         </div>

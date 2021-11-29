@@ -77,7 +77,7 @@ if($username !== ""){ //checking if all the information are correctly set
             $msg = "Preauthenticate endpoint not found";
             $err = array(
                 "status" => "404",
-                'error' => $msg
+                'statusText' => $msg
             );
             echo json_encode($err);
             /*

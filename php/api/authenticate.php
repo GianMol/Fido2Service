@@ -8,26 +8,20 @@ if( empty($_POST)){
 
 $intent = "";
 $username = "";
-$firstname = "";
-$lastname = "";
 $id = "";
 $rawId = "";
-$type = "";
-$attestationObject = "";
+$authenticatorData = "";
+$signature = "";
+$userHandle = "";
 $clientDataJSON = "";
 $reqOrigin = "";
+$type = "";
 
 if(isset($_POST->intent)){
     $intent = $_POST->intent;
 }
 if(isset($_POST->username)){
     $username = $_POST->username;
-}
-if(isset($_POST->firstname)){
-    $firstname = $_POST->firstname;
-}
-if(isset($_POST->lastname)){
-    $lastname = $_POST->lastname;
 }
 if(isset($_POST->id)){
     $id = $_POST->id;
@@ -38,17 +32,23 @@ if(isset($_POST->rawId)){
 if(isset($_POST->type)){
     $type = $_POST->type;
 }
-if(isset($_POST->attestationObject)){
-    $attestationObject = $_POST->attestationObject;
+if(isset($_POST->authenticatorData)){
+    $authenticatorData = $_POST->authenticatorData;
 }
 if(isset($_POST->clientDataJSON)){
     $clientDataJSON = $_POST->clientDataJSON;
 }
+if(isset($_POST->signature)){
+    $signature = $_POST->signature;
+}
+if(isset($_POST->userHandle)){
+    $userHandle = $_POST->userHandle;
+}
 $reqOrigin = $_SERVER['HTTP_HOST'];
 
 
-if($firstname !== "" && $lastname !== "" && $username !== "" && $intent !== "" && $id !== "" && 
-$rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !== "" && $reqOrigin !== ""){ //checking if all the information are correctly set
+if($username !== "" && $intent !== "" && $id !== "" && $rawId !== "" && $type !== "" &&
+$authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $reqOrigin !== ""){ //checking if all the information are correctly set
 
 
     /*
@@ -63,7 +63,7 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
         "payload": {
             "strongkeyMetadata": {
                 "version": "1.0",
-                "create_location": "Sunnyvale, CA",
+                "last_used_location": "Sunnyvale, CA",
                 "username": "johndoe",
                 "origin": "https://demo4.strongkey.com"
             },
@@ -71,8 +71,10 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
                 "id": "79U433x2hykUyf-h02qXwEkpyLN15N61MhYDTlM6AuWi-rmrO7kA0LdP3nSJNYedw6AqAh6RZiWjIyh5b1npW4oMJRS1sYMJVkRbNVlwBpSy_0OW2pRKLvVSRjxzT7LXsGV_i4r7KRE83ItVOS_cDKbYn3axDcYiUNaRXAR1DfHC5UP3hpystaKsOKvfCop2oA0rfrymTsUmF7RGKP-MNCiMP_Z5EnO8hHntAs41kTg",
                 "rawId": "79U433x2hykUyf-h02qXwEkpyLN15N61MhYDTlM6AuWi-rmrO7kA0LdP3nSJNYedw6AqAh6RZiWjIyh5b1npW4oMJRS1sYMJVkRbNVlwBpSy_0OW2pRKLvVSRjxzT7LXsGV_i4r7KRE83ItVOS_cDKbYn3axDcYiUNaRXAR1DfHC5UP3hpystaKsOKvfCop2oA0rfrymTsUmF7RGKP-MNCiMP_Z5EnO8hHntAs41kTg",
                 "response": {
-                    "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSjY2FsZyZjc2lnWEcwRQIhAKh568CoVnRo3MIwVyLbYTiXuO7FTbsKfuqin4vhpu9YAiAEWQuISPN74PyBD_tpWmjKix9gg_sQjf7xj0hO096XDGN4NWOBWQHkMIIB4DCCAYOgAwIBAgIEbCtY8jAMBggqhkjOPQQDAgUAMGQxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5TdHJvbmdBdXRoIEluYzEiMCAGA1UECxMZQXV0aGVudGljYXRvciBBdHRlc3RhdGlvbjEYMBYGA1UEAwwPQXR0ZXN0YXRpb25fS2V5MB4XDTE5MDcxODE3MTEyN1oXDTI5MDcxNTE3MTEyN1owZDELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDlN0cm9uZ0F1dGggSW5jMSIwIAYDVQQLExlBdXRoZW50aWNhdG9yIEF0dGVzdGF0aW9uMRgwFgYDVQQDDA9BdHRlc3RhdGlvbl9LZXkwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQx9IY-uvfEvZ9HaJX3yaYmOqSIYQxS3Oi3Ed7iw4zXGR5C4RaKyOQeIu1hK2QCgoq210KjwNFU3TpsqAMZLZmFoyEwHzAdBgNVHQ4EFgQUNELQ4HBDjTWzj9E0Z719E4EeLxgwDAYIKoZIzj0EAwIFAANJADBGAiEA7RbR2NCtyMQwiyGGOADy8rDHjNFPlZG8Ip9kr9iAKisCIQCi3cNAFjTL03-sk7C1lij7JQ6mO7rhfdDMfDXSjegwuWhhdXRoRGF0YVkBNPgUPcPowj_96fevjVCLWyuOXtHPc57ItRHBr0kyY4M-QQAAAAAAAAAAAAAAAAAAAAAAAAAAALDv1TjffHaHKRTJ_6HTapfASSnIs3Xk3rUyFgNOUzoC5aL6uas7uQDQt0_edIk1h53DoCoCHpFmJaMjKHlvWelbigwlFLWxgwlWRFs1WXAGlLL_Q5balEou9VJGPHNPstewZX-LivspETzci1U5L9wMptifdrENxiJQ1pFcBHUN8cLlQ_eGnKy1oqw4q98KinagDSt-vKZOxSYXtEYo_4w0KIw_9nkSc7yEee0CzjWROKUBAgMmIAEhWCDyaCL1FRBjx_tJLFlnzwTSys214ccamb3iM8ioevGOEiJYIG_S-DmdODz6_GN6nOT4nlcmu55QbWFZXu7anb-KQgdI",
-                    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiTENkbXlPQ2ZEUzltZDVJZkFYTzhtZyIsIm9yaWdpbiI6Imh0dHBzOi8vcWEtaW5mb3N5cy1maWRvLTIuc3Ryb25na2V5LmNvbTo4MTgxIn0"
+                    "authenticatorData": "WnTBrV2dI2nYtpWAzOrzVHMkwfEC46dxHD4U1RP9KKMBAAAAFA",
+                    "signature": "MEUCIEB1evFffkyk1TwLRNtPWTv3G40DqABEuU8PJIdevt-lAiEAq9EiWwPicP3Ln2rQ17C1g--OEYGxhp1Q1aHV3rUrE2c",
+                    "userHandle": "",
+                    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiNWVWRGRGbVg0Y3JmNWJaVkE4WGhkZyIsIm9yaWdpbiI6Imh0dHBzOi8vZGVtbzQuc3Ryb25na2V5LmNvbSJ9"
                 },
                 "type": "public-key"
             }
@@ -83,16 +85,19 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     
     $metadataObj = array(
         'version' => METADATA_VERSION,
-        'create_location' => METADATA_LOCATION,
+        'last_used_location' => METADATA_LOCATION,
         'username' => $username,
-        'origin' => "https://" . $reqOrigin
+        'origin' => "https://" . $reqOrigin,
+        'clientUserAgent' => $_SERVER['HTTP_USER_AGENT']
     );
 
     $responseObj = array(
         'id' => $id,
         'rawId' => $rawId,
         'response' => array(
-            'attestationObject' => $attestationObject,
+            'authenticatorData' => $authenticatorData,
+            'signature' => $signature,
+            'userHandle' => $userHandle,
             'clientDataJSON' => $clientDataJSON
         ),
         'type' => $type
@@ -107,7 +112,7 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     );
     $post_data = json_encode($data); //encoding data to be correctly put in the body of the request
 
-    $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_REGISTRATION_PATH; //preparing the correct endpoint of the FIDO2 server
+    $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_AUTHENTICATE_PATH; //preparing the correct endpoint of the FIDO2 server
     
     $crl = curl_init($url);
     curl_setopt($crl, CURLOPT_RETURNTRANSFER, true); //returns the transfer as a string of the return value of curl_exec() instead of outputting it directly
@@ -124,7 +129,7 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     $result = curl_exec($crl); //executing the request
     
     if($result === false){ //this is the error case
-        $msg = "Register endpoint not found";
+        $msg = "Authenticate endpoint not found";
         $err = array(
             "status" => "404", //Not found
             'statusText' => $msg
@@ -139,39 +144,13 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
             echo json_encode($err);
             exit;
         }
-
-        $conn = mysqli_connect("localhost", "root", "", "fido2service"); //connection to mysql database
-        mysqli_query($conn, "set character set 'utf8'");
+        $_SESSION['username'] = $username;
         
-        $username = mysqli_real_escape_string($conn, $username); //sanitizing information sent by the client
-        $firstname = mysqli_real_escape_string($conn, $firstname);
-        $lastname = mysqli_real_escape_string($conn, $lastname);
-
-    
-        $query = "SELECT MAX(id) FROM users WHERE 1"; //query to be executed in database
-        $res = mysqli_query($conn, $query); //execution of the query
-        if(mysqli_num_rows($res) === 0){ //if no row is returned
-            mysqli_free_result($res); //freeing results and closing database
-            mysqli_close($conn);
-            $msg = "Internal server error";
-            $err = array(
-                "status" => "500", //Internal server error
-                'statusText' => $msg
-            );
-            echo json_encode($err);
-            exit;
-        }
-        else{
-            $id = mysqli_fetch_assoc($res)['MAX(id)'] + 1;
-            $query = "INSERT INTO users(id, username, first_name, last_name) VALUES('".$id."', '".$username."', '".$firstname."', '".$lastname."')"; //query to be executed in database
-            mysqli_query($conn, $query); //execution of the query
-            mysqli_close($conn);
-            $send = array(
-                "status" => "200",
-                "result" => $result
-            );
-            echo json_encode($send);
-        }
+        $send = array(
+            "status" => "200",
+            "result" => $result
+        );
+        echo json_encode($send);
     }
 }
 else{

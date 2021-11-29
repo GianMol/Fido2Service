@@ -1,9 +1,9 @@
-<?php/*
+<?php
 session_start();
 if(isset($_SESSION["username"])){
-    header("location: resource.php");
+    header("location: /fido2service/Fido2Service/");
     exit;
-}*/
+}
 ?>
 
 <html>

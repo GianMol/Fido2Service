@@ -75,7 +75,7 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
         $msg = "Get keys endpoint not found";
         $err = array(
             "status" => "404",
-            'error' => $msg
+            'statusText' => $msg
         );
         echo json_encode($err);}
     else{ //this is the success case
@@ -107,7 +107,7 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
             $msg = "Deregister endpoint not found";
             $err = array(
                 "status" => "404",
-                'error' => $msg
+                'statusText' => $msg
             );
             echo json_encode($err);
         }
