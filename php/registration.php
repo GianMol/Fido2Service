@@ -30,15 +30,15 @@ if(isset($_SESSION["username"])){
         </div>
         <div id="body-layout">
             <h3>Registration</h3>
-            <div id='parameters-error' class="hidden" class="error">compilare tutti i campi</div>
+            <div id='parameters-error' class="hidden error">compilare tutti i campi</div>
             <form method="post" id="register-form">
                 <input id="firstname" name="firstname" class="input-item" type="text" placeholder="First Name">
                 <input id="lastname" name="lastname" class="input-item" type="text" placeholder="Last Name">
                 <input id="username" name="username" class="input-item" type="text" placeholder="Username">
-                <div class="hidden" class="error">Username already in use</div>
+                <div id='username-error' class="hidden error"></div>
                 <input id="displayname" name="displayname" class="input-item" type="text" placeholder="Display Name">
+                <button id="submit-button" type="submit">Sign Up</button>
             </form>
-            <button id="submit-button" type="submit">Sign Up</button>
         </div>
     </body>
 

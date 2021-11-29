@@ -12,10 +12,10 @@ $firstname = "";
 $lastname = "";
 $id = "";
 $rawId = "";
-$response = "";
 $type = "";
 $attestationObject = "";
 $clientDataJSON = "";
+$reqOrigin = "";
 
 if(isset($_POST->intent)){
     $intent = $_POST->intent;
@@ -35,9 +35,6 @@ if(isset($_POST->id)){
 if(isset($_POST->rawId)){
     $rawId = $_POST->rawId;
 }
-if(isset($_POST->response)){
-    $response = $_POST->response;
-}
 if(isset($_POST->type)){
     $type = $_POST->type;
 }
@@ -47,14 +44,11 @@ if(isset($_POST->attestationObject)){
 if(isset($_POST->clientDataJSON)){
     $clientDataJSON = $_POST->clientDataJSON;
 }
-$reqOrigin = $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-
-echo $attestationObject;
-echo $clientDataJSON;
+$reqOrigin = $_SERVER['HTTP_HOST'];
 
 
 if($firstname !== "" && $lastname !== "" && $username !== "" && $intent !== "" && $id !== "" && 
-$rawId !== "" && $response !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !== ""){ //checking if all the information are correctly set
+$rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !== "" && $reqOrigin !== ""){ //checking if all the information are correctly set
 
 
     /*
@@ -91,7 +85,7 @@ $rawId !== "" && $response !== "" && $type !== "" && $attestationObject !== "" &
         'version' => METADATA_VERSION,
         'create_location' => METADATA_LOCATION,
         'username' => $username,
-        'origin' => " https://" . $reqOrigin
+        'origin' => "https://" . $reqOrigin
     );
 
     $responseObj = array(
@@ -153,15 +147,31 @@ $rawId !== "" && $response !== "" && $type !== "" && $attestationObject !== "" &
         $firstname = mysqli_real_escape_string($conn, $firstname);
         $lastname = mysqli_real_escape_string($conn, $lastname);
 
-        
-        $query = "INSERT INTO users(username, first_name, last_name) VALUES('".$username."', '".$firstname."', '".$lastname."')"; //query to be executed in database
-        mysqli_query($conn, $query); //execution of the query
-        mysqli_close($conn);
-        $send = array(
-            "status" => "200",
-            "result" => $result
-        );
-        echo json_encode($send);
+    
+        $query = "SELECT MAX(id) FROM users WHERE 1"; //query to be executed in database
+        $res = mysqli_query($conn, $query); //execution of the query
+        if(mysqli_num_rows($res) === 0){ //if no row is returned
+            mysqli_free_result($res); //freeing results and closing database
+            mysqli_close($conn);
+            $msg = "DB error";
+            $err = array(
+                "status" => "500",
+                'statusText' => $msg
+            );
+            echo json_encode($err);
+            exit;
+        }
+        else{
+            $id = mysqli_fetch_assoc($res)['MAX(id)'] + 1;
+            $query = "INSERT INTO users(id, username, first_name, last_name) VALUES('".$id."', '".$username."', '".$firstname."', '".$lastname."')"; //query to be executed in database
+            mysqli_query($conn, $query); //execution of the query
+            mysqli_close($conn);
+            $send = array(
+                "status" => "200",
+                "result" => $result
+            );
+            echo json_encode($send);
+        }
     }
 }
 else{

@@ -28,7 +28,7 @@ define('SKFS_REGISTRATION_PATH', '/skfs/rest/register');
 define('SKFS_GET_KEYS_INFO_PATH', '/skfs/rest/getkeysinfo');
 define('SKFS_DEREGISTER_PATH', '/skfs/rest/deregister');
 define('METADATA_VERSION', '1.0');
-define('METADATA_LOCATION', 'Cupertino, CA');
+define('METADATA_LOCATION', 'Catania, CT');
 
 function console_log($output, $with_script_tags = true){
     $js_code = 'console.log('.json_encode($output, JSON_HEX_TAG).');';
@@ -40,11 +40,5 @@ function alert($msg) {
 }
 
 
-/*
-if(isset($decoded_result) && $decoded_result !== null){
-    $resp = json_encode($decoded_result);
-    $params = array("registration", $resp);
-    $jsparams = json_encode($params, JSON_HEX_TAG | JSON_HEX_AMP);
-    //echo "<!-- <script>createCredentials.apply(null, $jsparams)</script>"; -->
-}*/
+
 ?>

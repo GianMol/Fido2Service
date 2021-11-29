@@ -33,12 +33,11 @@ if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !==
     $query = "SELECT * FROM users WHERE username = '".$username."'"; //query to be executed in database
     $res = mysqli_query($conn, $query); //execution of the query
     if(mysqli_num_rows($res) !== 0){ //if a row is returned, then the chosen username is already in use
-        $mysql_error = true; //setting $mysql_error flag: it is needed to show an error message 
         mysqli_free_result($res); //freeing results and closing database
         mysqli_close($conn);
         $msg = "Username is already in use";
         $err = array(
-            "status" => "400",
+            "status" => "409", //Conflict
             'statusText' => $msg
         );
         echo json_encode($err);

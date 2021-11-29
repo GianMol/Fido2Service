@@ -41,22 +41,22 @@ const decode = function (base64string) {
 
 const challengeToBuffer = function(input) {
     input = JSON.parse(input);
-    input.Response.challenge = decode(input.Response.challenge);
-    if(typeof input.Response.user !== 'undefined') {
-        input.Response.user.id = decode(input.Response.user.id);
+    input.challenge = decode(input.challenge);
+    if(typeof input.user !== 'undefined') {
+        input.user.id = decode(input.user.id);
     }
   
-    if (input.Response.excludeCredentials) {
-        for (let i = 0; i < input.Response.excludeCredentials.length; i++) {
-            input.Response.excludeCredentials[i].id = input.Response.excludeCredentials[i].id.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-            input.Response.excludeCredentials[i].id = decode(input.Response.excludeCredentials[i].id);
+    if (input.excludeCredentials) {
+        for (let i = 0; i < input.excludeCredentials.length; i++) {
+            input.excludeCredentials[i].id = input.excludeCredentials[i].id.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            input.excludeCredentials[i].id = decode(input.excludeCredentials[i].id);
         }
     }
     
-    if (input.Response.allowCredentials) {
-      for (let i = 0; i < input.Response.allowCredentials.length; i++) {
-        input.Response.allowCredentials[i].id = input.Response.allowCredentials[i].id.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-        input.Response.allowCredentials[i].id = decode(input.Response.allowCredentials[i].id);
+    if (input.allowCredentials) {
+      for (let i = 0; i < input.allowCredentials.length; i++) {
+        input.allowCredentials[i].id = input.allowCredentials[i].id.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        input.allowCredentials[i].id = decode(input.allowCredentials[i].id);
       }
     }
     return input;
@@ -82,14 +82,13 @@ const responseToBase64 = function(input) {
 function callFIDO2RegistrationToken(intent, challenge, data) {
     let challengeBuffer = challengeToBuffer(challenge);
     let credentialsContainer = window.navigator;
-    credentialsContainer.credentials.create({ publicKey: challengeBuffer.Response })
+    credentialsContainer.credentials.create({ publicKey: challengeBuffer })
     .then(credResp => {
         let credResponse = responseToBase64(credResp);
         credResponse.username = data.username;
         credResponse.firstname = data.firstname;
         credResponse.lastname = data.lastname;
         credResponse.intent = intent;
-        console.log(credResponse);
         fetch("https://fido2service.strongkey.com/fido2service/Fido2Service/php/api/register.php", {
             method: 'POST',
             headers: {
@@ -98,26 +97,20 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
             body: JSON.stringify(credResponse)
         })
         .then((register_response) => {
-            
-            return register_response.text();
+            return register_response.json();
         })
         .then((register_json) => {
-            console.log(register_json);
-            if(!register_json.Response.toString().toLowerCase().includes("error")){
+            if(register_json.status === "200"){
                 //window.location.replace(window.location.protocol + "//" + window.location.host + "/login");
-                console.log("registrato");
+                alert("Registration complete");
             } else {
-                alert(response.Response);
+                alert(register_json.status + ": " +  register_json.statusText);
             }
         })
         .catch((err) => {
+            console.log(err);
             alert(err);
         })
-        /*$.post('/submitChallengeResponse',  credResponse)
-        .done(regResponse => onResult(intent,regResponse))
-        .fail((jqXHR, textStatus, errorThrown) => {
-            console.log(jqXHR, textStatus, errorThrown);
-        });*/
     })
     .catch(error => {
         alert(error);
@@ -130,8 +123,12 @@ const handle_submit = function(event){
     const form = document.getElementById('register-form');
     if(form.firstname.value.length === 0 || form.lastname.value.length === 0 || form.username.value.length === 0 || form.displayname.value.length === 0){
         let error = document.getElementById('parameters-error');
-        console.log(error);
         error.classList.remove('hidden');
+        error = document.getElementById('username-error');
+        if(!error.classList.contains('hidden')){
+            error.textContent = "";
+            error.classList.add('hidden');
+        } 
     }
     else{
         let data = {
@@ -151,9 +148,30 @@ const handle_submit = function(event){
             return preregister_response.json();
         })
         .then((preregister_json) => {
-            console.log("preregister_json.result: ");
-            console.log(JSON.parse(preregister_json.result));
-            callFIDO2RegistrationToken("registration", preregister_json.result, data);
+            if(preregister_json.status === "200"){
+                let error = document.getElementById('parameters-error');
+                if(!error.classList.contains('hidden')) error.classList.add('hidden');
+                error = document.getElementById('username-error');
+                if(!error.classList.contains('hidden')){
+                    error.textContent = "";
+                    error.classList.add('hidden');
+                } 
+
+
+                callFIDO2RegistrationToken("registration", JSON.stringify(JSON.parse(preregister_json.result).Response), data);
+            } else {
+                if(preregister_json.status === "409"){
+                    let error = document.getElementById('parameters-error');
+                    if(!error.classList.contains('hidden')) error.classList.add('hidden');
+
+                    error = document.getElementById('username-error');
+                    error.textContent = preregister_json.statusText;
+                    error.classList.remove('hidden');
+                }
+                else{
+                    alert(preregister_json.status + ": " +  preregister_json.statusText);
+                }
+            }
         })
         .catch((err) => {
             alert(err);
