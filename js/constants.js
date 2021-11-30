@@ -145,4 +145,4 @@ export const showLoading = function(show){
         bodylayout.classList.remove('hidden');
         bodylayout.classList.add('body-layout');
     }
-}
+} 
