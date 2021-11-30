@@ -39,6 +39,9 @@ function alert($msg) {
     echo "<script type='text/javascript'>alert('$msg');</script>";
 }
 
-
+function hidden($msg){
+    $res = '<div class = "hidden">'.$msg.'</div>';
+    echo $res;
+}
 
 ?>

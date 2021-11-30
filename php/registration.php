@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(isset($_SESSION["username"])){
+if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
     header("location: /fido2service/Fido2Service/");
     exit;
 }
@@ -12,8 +12,7 @@ if(isset($_SESSION["username"])){
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Fido2 Service Registration</title>
         <!--<link rel="icon" type="image/png" href="./Images/libro-stilizzato.png" sizes="16x16" /> -->
-        <script type = "module" src = "../js/constants.js" defer="true"></script>
-        <script src = "../js/registration.js" defer="true"></script>
+        <script type = "module" src = "../js/registration.js" defer="true"></script>
 
         <link rel="stylesheet" href="../css/registration.css">
         <link rel="stylesheet" href="../css/layout.css">

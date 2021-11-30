@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(isset($_SESSION["username"])){
+if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
     header("location: /fido2service/Fido2Service/");
     exit;
 }
@@ -139,6 +139,7 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
             "status" => "404", //Not found
             'statusText' => $msg
         );
+        echo json_encode($err);
     }
     else{ //this is the success case
         if(str_contains(strtolower(json_encode($result)), 'error')){
@@ -146,13 +147,17 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
                 "status" => "500", //Internal server error
                 'statusText' => $result
             );
+            echo json_encode($err);
             exit;
         }
         $_SESSION['username'] = $username;
+        $_SESSION['id'] = $_SESSION['userId'];
+        $_SESSION['userId'] = "";
         $send = array(
             "status" => "200",
             'statusText' => "Authentication Success"
         );
+        echo json_encode($send);
         exit;
     }
 }
@@ -164,10 +169,9 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Fido2 Service Login</title>
         <!--<link rel="icon" type="image/png" href="./Images/libro-stilizzato.png" sizes="16x16" /> -->
-        <script type = "module" src = "../js/constants.js" defer="true"></script>
-        <script src = "../js/login.js" defer="true"></script>
+        <script type = "module" src = "../js/login.js" defer="true"></script>
 
-        <link rel="stylesheet" href="../css/authentication.css">
+        <link rel="stylesheet" href="../css/login.css">
         <link rel="stylesheet" href="../css/layout.css">
         <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">

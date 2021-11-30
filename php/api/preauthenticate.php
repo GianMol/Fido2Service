@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once("../../constants.php");
 
 if( empty($_POST)){
@@ -31,8 +32,8 @@ if($username !== ""){ //checking if all the information are correctly set
         echo json_encode($err);
         exit;
     }
-    else{ //in case the username is free to be used
-
+    else{ //in case the username is valid
+        $id = mysqli_fetch_object($res)->id;
         /*
         "data" = {
             "svcinfo": {
@@ -93,6 +94,7 @@ if($username !== ""){ //checking if all the information are correctly set
                 "status" => "200",
                 "result" => $result
             );
+            $_SESSION['userId'] = $id;
             echo json_encode($send);
         }
     }

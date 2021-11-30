@@ -1,5 +1,5 @@
 <?php
-    
+session_start();
 ?>
 
 <html>
@@ -20,6 +20,12 @@
             <a href="./php/login.php">Login</a>
             <a href="https://www.google.com">Resource</a>
             <a href="./index.php">Home</a>
+            <?php
+                if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
+                    echo '<a href="./php/api/deregister.php">Deregister</a>';
+                    echo '<a href="./php/api/logout.php">Logout</a>';
+                }
+            ?>
         </div>
         <div id="body-layout">
             <h1>
