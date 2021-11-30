@@ -180,19 +180,13 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
     </head>
 
     <body>
-        <div id="loading" class="hidden">Loading<span id="dots"></span></div>
-        <div id="nav-bar" class="nav-bar">
+    <div id="nav-bar">
             <a href="./registration.php">Register</a>
             <a href="./login.php">Login</a>
             <a href="https://www.google.com">Resource</a>
             <a href="../index.php">Home</a>
         </div>
-        <div id="body-layout" class="body-layout">
-            <?php
-                if(isset($_GET['registered']) && $_GET['registered']){
-                    echo '<h3>Registration complete! Please login</h3>';
-                }
-            ?>
+        <div id="body-layout">
             <h3>Login</h3>
             <div id='parameters-error' class="hidden error">Fulfill the form</div>
             <?php

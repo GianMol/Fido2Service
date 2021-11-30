@@ -15,7 +15,7 @@ session_start();
     </head>
 
     <body>
-        <div id="nav-bar" class="nav-bar">
+        <div id="nav-bar">
             <a href="./php/registration.php">Register</a>
             <a href="./php/login.php">Login</a>
             <a href="https://www.google.com">Resource</a>
@@ -27,7 +27,7 @@ session_start();
                 }
             ?>
         </div>
-        <div id="body-layout" class="body-layout">
+        <div id="body-layout">
             <?php
                 if(isset($_SESSION["username"]) && isset($_SESSION["id"]) && isset($_SESSION["displayname"]) && $_SESSION["username"] !== ""){
                     echo '<h4>Welcome ',

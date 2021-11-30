@@ -1,4 +1,4 @@
-import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_REGISTRATION_PATH, FIDO2SERVICE_REGISTRATION_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
+import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_REGISTRATION_PATH, FIDO2SERVICE_REGISTRATION_PATH, challengeToBuffer, responseToBase64 } from './constants.js';
 
 function callFIDO2RegistrationToken(intent, challenge, data) {
     let challengeBuffer = challengeToBuffer(challenge);
@@ -24,19 +24,17 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
         })
         .then((register_json) => {
             if(register_json.status === "200"){
-                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/php/login.php?registered=true");
+                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/php/login.php");
             } else {
                 alert(register_json.status + ": " +  register_json.statusText);
             }
-            showLoading(false);
         })
         .catch((err) => {
-            showLoading(false);
+            console.log(err);
             alert(err);
         })
     })
     .catch(error => {
-        showLoading(false);
         alert(error);
     });
 }
@@ -44,7 +42,6 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
 
 const handle_submit = function(event){
     event.preventDefault();
-
     const form = document.getElementById('register-form');
     if(form.firstname.value.length === 0 || form.lastname.value.length === 0 || form.username.value.length === 0 || form.displayname.value.length === 0){
         let error = document.getElementById('parameters-error');
@@ -62,7 +59,6 @@ const handle_submit = function(event){
             username: form.username.value,
             displayname: form.displayname.value
         }
-        showLoading(true);
         let url = PRE_FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_PRE_REGISTRATION_PATH;
         fetch(url, {
             method: 'POST',
@@ -75,7 +71,6 @@ const handle_submit = function(event){
             return preregister_response.json();
         })
         .then((preregister_json) => {
-
             if(preregister_json.status === "200"){
                 let error = document.getElementById('parameters-error');
                 if(!error.classList.contains('hidden')) error.classList.add('hidden');
@@ -83,7 +78,9 @@ const handle_submit = function(event){
                 if(!error.classList.contains('hidden')){
                     error.textContent = "";
                     error.classList.add('hidden');
-                }
+                } 
+
+
                 callFIDO2RegistrationToken("registration", JSON.stringify(JSON.parse(preregister_json.result).Response), data);
             } else {
                 if(preregister_json.status === "409"){
@@ -97,11 +94,9 @@ const handle_submit = function(event){
                 else{
                     alert(preregister_json.status + ": " +  preregister_json.statusText);
                 }
-                showLoading(false);
             }
         })
         .catch((err) => {
-            showLoading(false);
             alert(err);
         })
     }

@@ -1,4 +1,4 @@
-import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_AUTHENTICATION_PATH, FIDO2SERVICE_AUTHENTICATION_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
+import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_AUTHENTICATION_PATH, FIDO2SERVICE_AUTHENTICATION_PATH, challengeToBuffer, responseToBase64 } from './constants.js';
 
 function callFIDO2AuthenticationToken(intent, challenge, data) {
     let challengeBuffer = challengeToBuffer(challenge);
@@ -28,15 +28,12 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
                 error.textContent = authenticate_json.statusText;
                 error.classList.remove('hidden');
             }
-            showLoading(false);
         })
         .catch((err) => {
-            showLoading(false);
             alert(err);
         })
     })
     .catch(error => {
-        showLoading(false);
         alert(error);
     });
 }
@@ -58,7 +55,6 @@ const handle_submit = function(event){
         let data = {
             username: form.username.value,
         }
-        showLoading(true);
         let url = PRE_FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_PRE_AUTHENTICATION_PATH;
         fetch(url, {
             method: 'POST',
@@ -92,11 +88,9 @@ const handle_submit = function(event){
                 else{
                     alert(preauthenticate_json.status + ": " +  preauthenticate_json.statusText);
                 }
-                showLoading(false);
             }
         })
         .catch((err) => {
-            showLoading(false);
             alert(err);
         })
     }

@@ -21,14 +21,14 @@ if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
     </head>
 
     <body>
-        <div id="loading" class="hidden">Loading<span id="dots"></span></div>
-        <div id="nav-bar" class="nav-bar">
+        <div id="loading" class="hidden">Loading...</div>
+        <div id="nav-bar">
             <a href="./registration.php">Register</a>
             <a href="./login.php">Login</a>
             <a href="https://www.google.com">Resource</a>
             <a href="../index.php">Home</a>
         </div>
-        <div id="body-layout" class="body-layout">
+        <div id="body-layout">
             <h3>Registration</h3>
             <div id='parameters-error' class="hidden error">compilare tutti i campi</div>
             <form method="post" id="register-form">
