@@ -153,9 +153,11 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
         $_SESSION['username'] = $username;
         $_SESSION['id'] = $_SESSION['userId'];
         $_SESSION['userId'] = "";
+        $_SESSION['displayname'] = $_SESSION['userDisplayname'];
+        $_SESSION['userDisplayname'] = "";
         $send = array(
             "status" => "200",
-            'statusText' => "Authentication Success"
+            'statusText' => $result
         );
         echo json_encode($send);
         exit;

@@ -9,6 +9,7 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
         credResponse.username = data.username;
         credResponse.firstname = data.firstname;
         credResponse.lastname = data.lastname;
+        credResponse.displayname = data.displayname;
         credResponse.intent = intent;
         let url = PRE_FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_REGISTRATION_PATH;
         fetch(url, {

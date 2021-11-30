@@ -33,7 +33,9 @@ if($username !== ""){ //checking if all the information are correctly set
         exit;
     }
     else{ //in case the username is valid
-        $id = mysqli_fetch_object($res)->id;
+        $row = mysqli_fetch_object($res);
+        $id = $row->id;
+        $displayname = $row->display_name;
         /*
         "data" = {
             "svcinfo": {
@@ -95,6 +97,7 @@ if($username !== ""){ //checking if all the information are correctly set
                 "result" => $result
             );
             $_SESSION['userId'] = $id;
+            $_SESSION['userDisplayname'] = $displayname;
             echo json_encode($send);
         }
     }

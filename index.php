@@ -28,6 +28,14 @@ session_start();
             ?>
         </div>
         <div id="body-layout">
+            <?php
+                if(isset($_SESSION["username"]) && isset($_SESSION["id"]) && isset($_SESSION["displayname"]) && $_SESSION["username"] !== ""){
+                    echo '<h4>Welcome ',
+                    $_SESSION['displayname'],
+                    '!</h4>';
+                }
+
+            ?>
             <h1>
                 HomePage Fido2 Service Home
             </h1>

@@ -8,7 +8,6 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
         let credResponse = responseToBase64(credResp);
         credResponse.intent = intent;
         credResponse.username = data.username;
-        console.log(credResponse);
         let url = PRE_FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_HOSTNAME + FIDO2SERVICE_AUTHENTICATION_PATH;
         fetch(url, {
             method: 'POST',
@@ -21,7 +20,6 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
             return authenticate_response.json();
         })
         .then((authenticate_json) => {
-            console.log(authenticate_json);
             if(authenticate_json.status === "200"){
                 window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/");
             }

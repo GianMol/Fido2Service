@@ -10,6 +10,7 @@ $intent = "";
 $username = "";
 $firstname = "";
 $lastname = "";
+$displayname = "";
 $id = "";
 $rawId = "";
 $type = "";
@@ -29,6 +30,9 @@ if(isset($_POST->firstname)){
 if(isset($_POST->lastname)){
     $lastname = $_POST->lastname;
 }
+if(isset($_POST->displayname)){
+    $displayname = $_POST->displayname;
+}
 if(isset($_POST->id)){
     $id = $_POST->id;
 }
@@ -47,7 +51,7 @@ if(isset($_POST->clientDataJSON)){
 $reqOrigin = $_SERVER['HTTP_HOST'];
 
 
-if($firstname !== "" && $lastname !== "" && $username !== "" && $intent !== "" && $id !== "" && 
+if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !== "" && $intent !== "" && $id !== "" && 
 $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !== "" && $reqOrigin !== ""){ //checking if all the information are correctly set
 
 
@@ -163,7 +167,7 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
         }
         else{
             $id = mysqli_fetch_assoc($res)['MAX(id)'] + 1;
-            $query = "INSERT INTO users(id, username, first_name, last_name) VALUES('".$id."', '".$username."', '".$firstname."', '".$lastname."')"; //query to be executed in database
+            $query = "INSERT INTO users(id, username, first_name, last_name, display_name) VALUES('".$id."', '".$username."', '".$firstname."', '".$lastname."', '".$displayname."')"; //query to be executed in database
             mysqli_query($conn, $query); //execution of the query
             mysqli_close($conn);
             $send = array(
