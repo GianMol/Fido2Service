@@ -1,4 +1,4 @@
-import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_REGISTRATION_PATH, FIDO2SERVICE_REGISTRATION_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
+import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_REGISTRATION_PATH, FIDO2SERVICE_REGISTRATION_PATH, FIDO2SERVICE_LOGIN_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
 
 function callFIDO2RegistrationToken(intent, challenge, data) {
     let challengeBuffer = challengeToBuffer(challenge);
@@ -23,8 +23,9 @@ function callFIDO2RegistrationToken(intent, challenge, data) {
             return register_response.json();
         })
         .then((register_json) => {
+
             if(register_json.status === "200"){
-                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/php/login.php?registered=true");
+                window.location.replace(window.location.protocol + "//" + window.location.host +  FIDO2SERVICE_LOGIN_PATH + "?registered=true");
             } else {
                 alert(register_json.status + ": " +  register_json.statusText);
             }
@@ -75,7 +76,6 @@ const handle_submit = function(event){
             return preregister_response.json();
         })
         .then((preregister_json) => {
-
             if(preregister_json.status === "200"){
                 let error = document.getElementById('parameters-error');
                 if(!error.classList.contains('hidden')) error.classList.add('hidden');

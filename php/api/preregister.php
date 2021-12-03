@@ -26,7 +26,7 @@ if(isset($_POST->displayname)){
 
 if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !== ""){ //checking if all the information are correctly set
 
-    $conn = mysqli_connect("localhost", "root", "", "fido2service"); //connection to mysql database
+    $conn = mysqli_connect("localhost", "fido2service", "fido", "fido2service"); //connection to mysql database
     mysqli_query($conn, "set character set 'utf8'");
     $username = mysqli_real_escape_string($conn, $username); //sanitizing information sent by the client
 
@@ -91,24 +91,28 @@ if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !==
         curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); //sets the body of the POST request
         curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); //sets the server port 
         curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //sets the path of server certificate
-        curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
+	curl_setopt($crl, CURLOPT_SSLCERT, CLIENT_CERTIFICATE_PATH); //sets the path of the client certificate
+	curl_setopt($crl, CURLOPT_SSLKEY, CLIENT_KEY_PATH); //sets the path of the client key
+
+	curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
             'Content-Type: application/json', //data has to be read as json
             'Content-Length: ' . strlen($post_data) //sets the lenght of data
         ));
 
 
 
-        /*
+/*
         //verbose
         curl_setopt($crl, CURLOPT_VERBOSE, true);
         $streamVerboseHandle = fopen('php://temp', 'w+');
         curl_setopt($crl, CURLOPT_STDERR, $streamVerboseHandle);
         $report = curl_getinfo($crl);
-        console_log($report);*/
-
+        console_log($report);
+*/
 
 
         $result = curl_exec($crl); //executing the request
+
         if($result === false){ //this is the error case
             $msg = "Preregister endpoint not found";
             $err = array(
@@ -116,13 +120,13 @@ if($firstname !== "" && $lastname !== "" && $username !== "" && $displayname !==
                 'statusText' => $msg
             );
             echo json_encode($err);
-            /*
+/*
             //verbose
             printf("cUrl error (#%d): %s<br>\n", curl_errno($crl), htmlspecialchars(curl_error($crl)));
             rewind($streamVerboseHandle);
             $verboseLog = stream_get_contents($streamVerboseHandle);
-            console_log($verboseLog);*/
-
+            console_log($verboseLog);
+*/
         }
         else{ //this is the success case
             $send = array(

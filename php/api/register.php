@@ -1,4 +1,5 @@
 <?php
+
 include_once("../../constants.php");
 
 if( empty($_POST)){
@@ -82,9 +83,9 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
             }
         }
     }
-    
+
     */
-    
+
     $metadataObj = array(
         'version' => METADATA_VERSION,
         'create_location' => METADATA_LOCATION,
@@ -112,7 +113,7 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     $post_data = json_encode($data); //encoding data to be correctly put in the body of the request
 
     $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_REGISTRATION_PATH; //preparing the correct endpoint of the FIDO2 server
-    
+
     $crl = curl_init($url);
     curl_setopt($crl, CURLOPT_RETURNTRANSFER, true); //returns the transfer as a string of the return value of curl_exec() instead of outputting it directly
     curl_setopt($crl, CURLINFO_HEADER_OUT, true); //tracks the handle's request string
@@ -120,13 +121,16 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
     curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); //sets the body of the POST request
     curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); //sets the server port 
     curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //sets the path of server certificate
+    curl_setopt($crl, CURLOPT_SSLCERT, CLIENT_CERTIFICATE_PATH);
+    curl_setopt($crl, CURLOPT_SSLKEY, CLIENT_KEY_PATH);
+
     curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
         'Content-Type: application/json', //data has to be read as json
         'Content-Length: ' . strlen($post_data) //sets the lenght of data
     ));
 
     $result = curl_exec($crl); //executing the request
-    
+
     if($result === false){ //this is the error case
         $msg = "Register endpoint not found";
         $err = array(
@@ -140,18 +144,20 @@ $rawId !== "" && $type !== "" && $attestationObject !== "" && $clientDataJSON !=
                 "status" => "500", //Internal server error
                 'statusText' => $result
             );
+
             echo json_encode($err);
             exit;
         }
 
-        $conn = mysqli_connect("localhost", "root", "", "fido2service"); //connection to mysql database
+        $conn = mysqli_connect("localhost", "fido2service", "fido", "fido2service"); //connection to mysql database
+
         mysqli_query($conn, "set character set 'utf8'");
-        
+
         $username = mysqli_real_escape_string($conn, $username); //sanitizing information sent by the client
         $firstname = mysqli_real_escape_string($conn, $firstname);
         $lastname = mysqli_real_escape_string($conn, $lastname);
 
-    
+
         $query = "SELECT MAX(id) FROM users WHERE 1"; //query to be executed in database
         $res = mysqli_query($conn, $query); //execution of the query
         if(mysqli_num_rows($res) === 0){ //if no row is returned

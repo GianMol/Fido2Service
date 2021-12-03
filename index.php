@@ -1,5 +1,6 @@
 <?php
 session_start();
+include_once("./constants.php");
 ?>
 
 <html>
@@ -16,14 +17,16 @@ session_start();
 
     <body>
         <div id="nav-bar" class="nav-bar">
-            <a href="./php/registration.php">Register</a>
-            <a href="./php/login.php">Login</a>
-            <a href="https://www.google.com">Resource</a>
-            <a href="./index.php">Home</a>
+            <a href=<?php echo FIDO2SERVICE_REGISTRATION_PATH; ?>>Register</a>
+            <a href=<?php echo FIDO2SERVICE_LOGIN_PATH; ?>>Login</a>
+            <a href=<?php echo FIDO2SERVICE_RESOURCE_PATH; ?>>Resource</a>
+            <a href=<?php echo FIDO2SERVICE_HOME_PATH; ?>>Home</a>
             <?php
                 if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
-                    echo '<a href="./php/api/deregister.php">Deregister</a>';
-                    echo '<a href="./php/api/logout.php">Logout</a>';
+                    $der = '<a href='.FIDO2SERVICE_DEREGISTER_PATH.'>Deregister</a>';
+                    $log = '<a href='.FIDO2SERVICE_LOGOUT_PATH.'>Logout</a>';
+		    echo $der;
+		    echo $log;
                 }
             ?>
         </div>

@@ -10,10 +10,12 @@ const AUTHTYPE = "PASSWORD";
 const SVCUSERNAME = "svcfidouser";
 const SVCPASSWORD = "Abcd1234!";
 
-define('CERTIFICATE_PATH', 'C:\xampp\htdocs\fido2service\Fido2Service\certificate\centos-home.pem');
+define('CLIENT_KEY_PATH', '/etc/apache2/ssl/apache.key');
+define('CLIENT_CERTIFICATE_PATH', '/etc/apache2/ssl/cert.pem');
+define('CERTIFICATE_PATH', '/var/www/html/certificate/fidoserver.pem');
 define('PRE_SKFS_HOSTNAME', 'https://');
-define('SKFS_HOSTNAME', 'centos.home');//192.168.1.65
-define('SKFS_PORT', '8181');
+define('SKFS_HOSTNAME', 'fido2server.strongkey.com');//192.168.1.65
+define('SKFS_PORT', '443');
 define('SVCINFO', array(
     'did' => DID,
     'protocol' => PROTOCOL,
@@ -30,6 +32,13 @@ define('SKFS_DEREGISTER_PATH', '/skfs/rest/deregister');
 define('METADATA_VERSION', '1.0');
 define('METADATA_LOCATION', 'Catania, CT');
 
+define('FIDO2SERVICE_REGISTRATION_PATH', '/php/registration.php');
+define('FIDO2SERVICE_LOGIN_PATH', '/php/login.php');
+define('FIDO2SERVICE_RESOURCE_PATH', '/php/resource.php');
+define('FIDO2SERVICE_HOME_PATH', '/');
+define('FIDO2SERVICE_DEREGISTER_PATH', '/php/api/deregister.php');
+define('FIDO2SERVICE_LOGOUT_PATH', '/php/api/logout.php');
+
 function console_log($output, $with_script_tags = true){
     $js_code = 'console.log('.json_encode($output, JSON_HEX_TAG).');';
     echo '<script>'.$js_code.'</script>';
@@ -42,6 +51,10 @@ function alert($msg) {
 function hidden($msg){
     $res = '<div class = "hidden">'.$msg.'</div>';
     echo $res;
+}
+
+function str_contains(string $haystack, string $needle):bool{
+    return '' === $needle || false !== strpos($haystack, $needle);
 }
 
 ?>

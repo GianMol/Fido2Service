@@ -1,7 +1,8 @@
 <?php
 session_start();
+require_once("../constants.php");
 if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
-    header("location: /fido2service/Fido2Service/");
+    header("location: ".FIDO2SERVICE_RESOURCE_PATH);
     exit;
 }
 ?>
@@ -23,10 +24,10 @@ if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
     <body>
         <div id="loading" class="hidden">Loading<span id="dots"></span></div>
         <div id="nav-bar" class="nav-bar">
-            <a href="./registration.php">Register</a>
-            <a href="./login.php">Login</a>
-            <a href="https://www.google.com">Resource</a>
-            <a href="../index.php">Home</a>
+            <a href=<?php echo FIDO2SERVICE_REGISTRATION_PATH; ?>>Register</a>
+            <a href=<?php echo FIDO2SERVICE_LOGIN_PATH; ?>>Login</a>
+            <a href=<?php echo FIDO2SERVICE_RESOURCE_PATH; ?>>Resource</a>
+            <a href=<?php echo FIDO2SERVICE_HOME_PATH; ?>>Home</a>
         </div>
         <div id="body-layout" class="body-layout">
             <h3>Registration</h3>

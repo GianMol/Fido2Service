@@ -1,7 +1,8 @@
 <?php
 session_start();
+require_once("../constants.php");
 if(isset($_SESSION["username"]) && isset($_SESSION["id"])){
-    header("location: /fido2service/Fido2Service/");
+    header("location: ".FIDO2SERVICE_RESOURCE_PATH);
     exit;
 }
 include_once("../constants.php");
@@ -126,6 +127,9 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
     curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); //sets the body of the POST request
     curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); //sets the server port 
     curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //sets the path of server certificate
+    curl_setopt($crl, CURLOPT_SSLCERT, CLIENT_CERTIFICATE_PATH);
+    curl_setopt($crl, CURLOPT_SSLKEY, CLIENT_KEY_PATH);
+
     curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
         'Content-Type: application/json', //data has to be read as json
         'Content-Length: ' . strlen($post_data) //sets the lenght of data
@@ -182,10 +186,10 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
     <body>
         <div id="loading" class="hidden">Loading<span id="dots"></span></div>
         <div id="nav-bar" class="nav-bar">
-            <a href="./registration.php">Register</a>
-            <a href="./login.php">Login</a>
-            <a href="https://www.google.com">Resource</a>
-            <a href="../index.php">Home</a>
+            <a href=<?php echo FIDO2SERVICE_REGISTRATION_PATH; ?>>Register</a>
+            <a href=<?php echo FIDO2SERVICE_LOGIN_PATH; ?>>Login</a>
+            <a href=<?php echo FIDO2SERVICE_RESOURCE_PATH; ?>>Resource</a>
+            <a href=<?php echo FIDO2SERVICE_HOME_PATH; ?>>Home</a>
         </div>
         <div id="body-layout" class="body-layout">
             <?php

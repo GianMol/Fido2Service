@@ -1,4 +1,4 @@
-import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_AUTHENTICATION_PATH, FIDO2SERVICE_AUTHENTICATION_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
+import { PRE_FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_HOSTNAME, FIDO2SERVICE_PRE_AUTHENTICATION_PATH, FIDO2SERVICE_AUTHENTICATION_PATH, FIDO2SERVICE_RESOURCE_PATH, challengeToBuffer, responseToBase64, showLoading } from './constants.js';
 
 function callFIDO2AuthenticationToken(intent, challenge, data) {
     let challengeBuffer = challengeToBuffer(challenge);
@@ -21,7 +21,7 @@ function callFIDO2AuthenticationToken(intent, challenge, data) {
         })
         .then((authenticate_json) => {
             if(authenticate_json.status === "200"){
-                window.location.replace(window.location.protocol + "//" + window.location.host + "/fido2service/Fido2Service/");
+                window.location.replace(window.location.protocol + "//" + window.location.host + FIDO2SERVICE_RESOURCE_PATH);
             }
             else{
                 error = document.getElementById('username-error');

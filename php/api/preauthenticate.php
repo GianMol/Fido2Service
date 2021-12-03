@@ -15,7 +15,7 @@ if(isset($_POST->username)){
 
 if($username !== ""){ //checking if all the information are correctly set
 
-    $conn = mysqli_connect("localhost", "root", "", "fido2service"); //connection to mysql database
+    $conn = mysqli_connect("localhost", "fido2service", "fido", "fido2service"); //connection to mysql database
     mysqli_query($conn, "set character set 'utf8'");
     $username = mysqli_real_escape_string($conn, $username); //sanitizing information sent by the client
 
@@ -70,6 +70,9 @@ if($username !== ""){ //checking if all the information are correctly set
         curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); //sets the body of the POST request
         curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); //sets the server port 
         curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //sets the path of server certificate
+	curl_setopt($crl, CURLOPT_SSLCERT, CLIENT_CERTIFICATE_PATH);
+	curl_setopt($crl, CURLOPT_SSLKEY, CLIENT_KEY_PATH);
+
         curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
             'Content-Type: application/json', //data has to be read as json
             'Content-Length: ' . strlen($post_data) //sets the lenght of data

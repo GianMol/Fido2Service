@@ -3,10 +3,12 @@
 export const FIDO2SERVICE_HOSTNAME = "fido2service.strongkey.com";
 export const PRE_FIDO2SERVICE_HOSTNAME = "https://";
 
-export const FIDO2SERVICE_PRE_REGISTRATION_PATH = "/fido2service/Fido2Service/php/api/preregister.php";
-export const FIDO2SERVICE_REGISTRATION_PATH = "/fido2service/Fido2Service/php/api/register.php";
-export const FIDO2SERVICE_PRE_AUTHENTICATION_PATH = "/fido2service/Fido2Service/php/api/preauthenticate.php";
-export const FIDO2SERVICE_AUTHENTICATION_PATH = "/fido2service/Fido2Service/php/login.php";
+export const FIDO2SERVICE_PRE_REGISTRATION_PATH = "/php/api/preregister.php";
+export const FIDO2SERVICE_REGISTRATION_PATH = "/php/api/register.php";
+export const FIDO2SERVICE_PRE_AUTHENTICATION_PATH = "/php/api/preauthenticate.php";
+export const FIDO2SERVICE_AUTHENTICATION_PATH = "/php/login.php";
+export const FIDO2SERVICE_LOGIN_PATH = "/php/login.php";
+export const FIDO2SERVICE_RESOURCE_PATH = "/";
 
 let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 let lookup = new Uint8Array(256);
