@@ -75,7 +75,6 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
         );
         echo json_encode($err);}
     else{ //this is the success case
-        echo json_encode(json_decode($result)->Response->keys[0]->keyid);
 
             /*
             "data" = {
@@ -90,7 +89,6 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
                     "keyid": "79U433x2hykUyf-h02qXwEkpyLN15N61MhYDTlM6AuWi-rmrO7kA0LdP3nSJNYedw6AqAh6RZiWjIyh5b1npW4oMJRS1sYMJVkRbNVlwBpSy_0OW2pRKLvVSRjxzT7LXsGV_i4r7KRE83ItVOS_cDKbYn3axDcYiUNaRXAR1DfHC5UP3hpystaKsOKvfCop2oA0rfrymTsUmF7RGKP-MNCiMP_Z5EnO8hHntAs41kTg"
                 }
             }
-            
             */
 
         $data = array(
@@ -103,7 +101,7 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
         $post_data = json_encode($data); //encoding data to be correctly put in the body of the request
 
         $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_DEREGISTER_PATH; //preparing the correct endpoint of the FIDO2 server
-        
+
         $crl = curl_init($url);
         curl_setopt($crl, CURLOPT_RETURNTRANSFER, true); //returns the transfer as a string of the return value of curl_exec() instead of outputting it directly
         curl_setopt($crl, CURLINFO_HEADER_OUT, true); //tracks the handle's request string
@@ -132,10 +130,10 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
 
             $conn = mysqli_connect("localhost", "fido2service", "fido", "fido2service"); //connection to mysql database
             mysqli_query($conn, "set character set 'utf8'");
-        
+
             $username = mysqli_real_escape_string($conn, $username); //sanitizing information sent by the client
             $id = mysqli_real_escape_string($conn, $id);
-        
+
             $query = "DELETE FROM users WHERE id = '".$id."'"; //query to be executed in database
             mysqli_query($conn, $query);
             mysqli_close($conn);
@@ -148,5 +146,4 @@ if($id !== "" && $username !== ""){ //checking if all the information are correc
         }
     }
 }
-header("location: ../login.php");
 ?>

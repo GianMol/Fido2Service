@@ -76,6 +76,7 @@ const handle_submit = function(event){
             return preregister_response.json();
         })
         .then((preregister_json) => {
+
             if(preregister_json.status === "200"){
                 let error = document.getElementById('parameters-error');
                 if(!error.classList.contains('hidden')) error.classList.add('hidden');

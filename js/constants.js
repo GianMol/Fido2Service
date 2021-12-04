@@ -7,8 +7,12 @@ export const FIDO2SERVICE_PRE_REGISTRATION_PATH = "/php/api/preregister.php";
 export const FIDO2SERVICE_REGISTRATION_PATH = "/php/api/register.php";
 export const FIDO2SERVICE_PRE_AUTHENTICATION_PATH = "/php/api/preauthenticate.php";
 export const FIDO2SERVICE_AUTHENTICATION_PATH = "/php/login.php";
+export const FIDO2SERVICE_PRE_AUTHORIZATION_PATH = "/php/api/preauthorize.php";
+export const FIDO2SERVICE_AUTHORIZATION_PATH = "/php/api/authorize.php";
+export const FIDO2SERVICE_TRANSACTIONS_PATH = "/php/transactions.php";
 export const FIDO2SERVICE_LOGIN_PATH = "/php/login.php";
-export const FIDO2SERVICE_RESOURCE_PATH = "/";
+export const FIDO2SERVICE_RESOURCE_PATH = "/php/resource.php";
+export const FIDO2SERVICE_DEREGISTER_PATH = "/php/api/deregister.php";
 
 let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 let lookup = new Uint8Array(256);

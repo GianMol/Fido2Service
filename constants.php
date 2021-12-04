@@ -29,6 +29,8 @@ define('SKFS_PREREGISTRATION_PATH', '/skfs/rest/preregister');
 define('SKFS_REGISTRATION_PATH', '/skfs/rest/register');
 define('SKFS_GET_KEYS_INFO_PATH', '/skfs/rest/getkeysinfo');
 define('SKFS_DEREGISTER_PATH', '/skfs/rest/deregister');
+define('SKFS_PREAUTHORIZE_PATH', '/skfs/rest/preauthorize');
+define('SKFS_AUTHORIZE_PATH', '/skfs/rest/authorize');
 define('METADATA_VERSION', '1.0');
 define('METADATA_LOCATION', 'Catania, CT');
 
@@ -38,6 +40,7 @@ define('FIDO2SERVICE_RESOURCE_PATH', '/php/resource.php');
 define('FIDO2SERVICE_HOME_PATH', '/');
 define('FIDO2SERVICE_DEREGISTER_PATH', '/php/api/deregister.php');
 define('FIDO2SERVICE_LOGOUT_PATH', '/php/api/logout.php');
+define('FIDO2SERVICE_TRANSACTIONS_PATH', '/php/transactions.php');
 
 function console_log($output, $with_script_tags = true){
     $js_code = 'console.log('.json_encode($output, JSON_HEX_TAG).');';
