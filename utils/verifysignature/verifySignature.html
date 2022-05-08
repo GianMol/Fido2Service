@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Verify Signature</title>
+        <link rel="icon" type="image/png" href="../../images/icon.png" sizes="16x16" />
+
+        <script type = "module" src = "./verifySignature.js" defer="true"></script>
+
+        <link rel="stylesheet" href="./verifySignature.css">
+        <link rel="stylesheet" href="../../css/layout.css">
+    </head>
+
+    <body>
+        <div id="loading" class="hidden">Loading<span id="dots"></span><div id="cicle"><span></span></div></div>
+        <div id="nav-bar" class="nav-bar"></div>
+        <div id="body-layout" class="body-layout">
+            <h1>Verify Signature</h1>
+            <form method="post" id="verify-form">
+                <textarea id="authenticatorData" name="authenticatorData" class="input-item" rows="2" cols="70" placeholder="authenticatorData" autofocus></textarea>
+                <textarea id="clientDataJson" name="clientDataJson" class="input-item" rows="4" cols="70" placeholder="clientDataJson"></textarea>
+                <textarea id="signerPublicKey" name="signerPublicKey" class="input-item" rows="9" cols="70" placeholder="signerPublicKey"></textarea>
+                <textarea id="signature" name="signature" class="input-item" rows="7" cols="70" placeholder="Signature"></textarea>
+                <textarea id="signingKeyAlgorithm" name="signingKeyAlgorithm" class="input-item" rows="2" cols="70" placeholder="signingKeyAlgorithm"></textarea>
+                <button id="submit-button" type="submit">Verify</button>
+            </form>
+            <div id="resultarea">
+                <span id="result"></span>
+                <img id="result-img" />
+            </div>
+        </div>
+    </body>
+
+</html>

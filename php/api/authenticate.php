@@ -1,12 +1,16 @@
 <?php
-include_once("../../constants.php");
-
-if( empty($_POST)){
+session_start(); // get information about the session
+require_once("../../constants.php"); // constants.php is here mandatory for constants used for the communication with the FIDO2 server
+if($_SERVER['REQUEST_METHOD'] !== 'POST'){ // if POST method is not used, then the user cannot access to this endpoint
+    // if it happens, the user is redirected to the homepage
+    header("location: ".FIDO2SERVICE_HOME_PATH);
+    exit;
+}
+if( empty($_POST)){ // if POST data are not correctly obtained, then decode them 
     $_POST = json_decode(file_get_contents('php://input', true));
 }
 
-
-$intent = "";
+// declaration of all data needed
 $username = "";
 $id = "";
 $rawId = "";
@@ -17,9 +21,7 @@ $clientDataJSON = "";
 $reqOrigin = "";
 $type = "";
 
-if(isset($_POST->intent)){
-    $intent = $_POST->intent;
-}
+// assignment of all data needed
 if(isset($_POST->username)){
     $username = $_POST->username;
 }
@@ -46,12 +48,12 @@ if(isset($_POST->userHandle)){
 }
 $reqOrigin = $_SERVER['HTTP_HOST'];
 
+if($username !== "" && $id !== "" && $rawId !== "" && $type !== "" &&
+$authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $reqOrigin !== ""){ // checking whether some needed data are missing
 
-if($username !== "" && $intent !== "" && $id !== "" && $rawId !== "" && $type !== "" &&
-$authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $reqOrigin !== ""){ //checking if all the information are correctly set
 
+    /* An example of data structure to be sent as input for SKFS authenticate endpoint is:
 
-    /*
     data: {
         "svcinfo": {
             "did": 1,
@@ -83,6 +85,7 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
     
     */
     
+    // generating data to be sent to SKFS authenticate endpoint
     $metadataObj = array(
         'version' => METADATA_VERSION,
         'last_used_location' => METADATA_LOCATION,
@@ -110,53 +113,75 @@ $authenticatorData !== "" && $clientDataJSON !== "" && $signature !== "" && $req
             'publicKeyCredential' => $responseObj
         )
     );
-    $post_data = json_encode($data); //encoding data to be correctly put in the body of the request
+    $post_data = json_encode($data); // encoding data to be correctly put in the body of the request
 
-    $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_AUTHENTICATE_PATH; //preparing the correct endpoint of the FIDO2 server
+    $url = PRE_SKFS_HOSTNAME . SKFS_HOSTNAME . SKFS_AUTHENTICATE_PATH; // preparing the correct endpoint of the FIDO2 server, the authenticate one
     
-    $crl = curl_init($url);
-    curl_setopt($crl, CURLOPT_RETURNTRANSFER, true); //returns the transfer as a string of the return value of curl_exec() instead of outputting it directly
-    curl_setopt($crl, CURLINFO_HEADER_OUT, true); //tracks the handle's request string
-    curl_setopt($crl, CURLOPT_POST, true); //does a regular HTTP POST
-    curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); //sets the body of the POST request
-    curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); //sets the server port 
-    curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); //sets the path of server certificate
-    curl_setopt($crl, CURLOPT_HTTPHEADER, array( //sets headers
-        'Content-Type: application/json', //data has to be read as json
-        'Content-Length: ' . strlen($post_data) //sets the lenght of data
+    $crl = curl_init($url); // initialization of curl
+    curl_setopt($crl, CURLOPT_RETURNTRANSFER, true); // returns the transfer as a string of the return value of curl_exec() instead of outputting it directly
+    curl_setopt($crl, CURLINFO_HEADER_OUT, true); // tracks the handle's request string
+    curl_setopt($crl, CURLOPT_POST, true); // sets the method of HTTP as POST
+    curl_setopt($crl, CURLOPT_POSTFIELDS, $post_data); // sets the body of the POST request
+    curl_setopt($crl, CURLOPT_PORT, SKFS_PORT); // sets the server port 
+    curl_setopt($crl, CURLOPT_CAINFO, CERTIFICATE_PATH); // sets the path of server certificate
+
+    // in case FIDO2 server requires client authentication, here the application sets the path of client certificate and key
+    curl_setopt($crl, CURLOPT_SSLCERT, CLIENT_CERTIFICATE_PATH);
+    curl_setopt($crl, CURLOPT_SSLKEY, CLIENT_KEY_PATH);
+
+    curl_setopt($crl, CURLOPT_HTTPHEADER, array( // sets headers
+        'Content-Type: application/json', // data has to be read as json
+        'Content-Length: ' . strlen($post_data) // sets the lenght of data
     ));
 
-    $result = curl_exec($crl); //executing the request
+    $result = curl_exec($crl); // executing the request
+
+    //test
+    file_log("curl", $url, $post_data, $result);
     
-    if($result === false){ //this is the error case
-        $msg = "Authenticate endpoint not found";
+    if($result === false){ // this is the error case
+        // an error object is generated and sent back to the client
+        $msg = "Error in connection with the server";
         $err = array(
             "status" => "404", //Not found
             'statusText' => $msg
         );
-        echo json_encode($err);}
-    else{ //this is the success case
-        if(str_contains(strtolower(json_encode($result)), 'error')){
+        echo json_encode($err);
+    }
+    else{ // this is the success case
+        if(str_contains(strtolower(json_encode($result)), 'error')){ // check if the endpoint answered with an error
+            // in this case, an error object is generated and sent back to the client
             $err = array(
                 "status" => "500", //Internal server error
                 'statusText' => $result
             );
             echo json_encode($err);
-            exit;
         }
-        $_SESSION['username'] = $username;
-        
-        $send = array(
-            "status" => "200",
-            "result" => $result
-        );
-        echo json_encode($send);
+        else{ // in case the endpoint gives back a positive result
+
+            // the session is correctly created
+            $_SESSION['username'] = $username;
+            $_SESSION['id'] = $_SESSION['userId'];
+            $_SESSION['displayname'] = $_SESSION['userDisplayname'];
+
+            // a success object is generated and sent back to the client
+            $send = array(
+                "status" => "200",
+                'statusText' => $result
+            );
+            echo json_encode($send);
+        }
     }
+
+    // temporary values inside the session are emptied
+    $_SESSION['userId'] = "";
+    $_SESSION['userDisplayname'] = "";
 }
-else{
+else{ // in case some needed data are missing
+    // an error object is generated and sent back to the client
     $msg = "Unprocessable Entity";
     $err = array(
-        "status" => "422", //Unprocessable Entity
+        "status" => "422",
         "statusText" => $msg
     );
     echo json_encode($err);

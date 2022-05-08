@@ -1,16 +1,121 @@
-.nav-bar{
-    width: 100vw;
-    height: 20vh;
+body{
+    color: darkblue;
+    background-image: url('../images/Background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#nav-bar{
+    width: 99vw;
+    height: 2vh;
+    margin-bottom: 10vh;
     min-height: 50px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
+#nav-bar a{
+    color: darkblue;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: beige;
+    height: 50px;
+    min-width: 100px;
+    text-align: center;
+    padding-top: 30px;
+    border-radius: 10px;
+    border: solid darkblue 1px;
+}
+
+#nav-bar a:hover{
+    color: beige;
+    background-color: darkblue;
+    border: solid beige 1px;
+}
+
+.body-layout{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 99vw;
+    min-height: 60vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.body-layout h3{
+    font-size: 1.5em;
+}
+
+.body-layout form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: beige;
+    border: solid darkblue 2px;
+    border-radius: 50px;
+    width: 50%;
+}
+
+.body-layout form input{
+    border-radius: 5px;
+    font-size: 1em;
+    color: darkblue;
+}
+
+button{
+    background-color: beige;
+    color: darkblue;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: darkblue;
+    color: beige;
+}
+
 .hidden{
-    display: none;
+    display: none !important;
 }
 
 .error{
     color: red;
+    min-width: 20vw;
+    background-color: palegoldenrod;
+    border: solid red 2px;
+    border-radius: 5px;
+}
+
+#loading{
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 2.5em;
+    padding-top: 10vh;
+}
+
+#cicle{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes cicle{
+    from{transform: rotate(0deg);}
+    to{transform: rotate(360deg);}
+}
+
+#cicle span{
+    border: solid darkblue 2px;
+    border-left: none;
+    border-right: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: cicle 2s infinite;
 }

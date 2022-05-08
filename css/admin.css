@@ -1,0 +1,15 @@
+.user_transactions{
+	margin-bottom: 15px;
+	padding: 10px;
+}
+
+.user_transactions .user{
+	margin-bottom: 20px;
+}
+
+.user_transactions .transaction{
+	margin-left: 50px;
+	margin-bottom: 5px;
+}
+
+

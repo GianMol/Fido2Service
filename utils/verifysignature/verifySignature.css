@@ -1,0 +1,17 @@
+#nav-bar{
+    height: 0px !important;
+    min-height: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+#verify-form textarea{
+    margin: 10px;
+}
+
+#verify-form button{
+    margin-bottom: 10px;
+}
+
+#resultarea img{
+    width: 50px;
+}

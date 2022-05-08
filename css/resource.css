@@ -1,0 +1,21 @@
+#transaction{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: beige;
+    border: solid darkblue 2px;
+    border-radius: 50px;
+    width: 50%;
+    min-height: 12vh;
+}
+
+#body-layout{
+    position: relative;
+}
+
+#deregister{
+    position: absolute;
+    left: 30%;
+    top: 32.5%;
+}

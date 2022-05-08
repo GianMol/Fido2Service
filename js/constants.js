@@ -1,25 +1,29 @@
 /* CONSTANTS */
 
+// location of the web application server
 export const FIDO2SERVICE_HOSTNAME = "fido2service.strongkey.com";
 export const PRE_FIDO2SERVICE_HOSTNAME = "https://";
 
+// location of endpoints of the web application server
 export const FIDO2SERVICE_PRE_REGISTRATION_PATH = "/php/api/preregister.php";
 export const FIDO2SERVICE_REGISTRATION_PATH = "/php/api/register.php";
 export const FIDO2SERVICE_PRE_AUTHENTICATION_PATH = "/php/api/preauthenticate.php";
-export const FIDO2SERVICE_AUTHENTICATION_PATH = "/php/login.php";
+export const FIDO2SERVICE_AUTHENTICATION_PATH = "/php/api/authenticate.php";
 export const FIDO2SERVICE_PRE_AUTHORIZATION_PATH = "/php/api/preauthorize.php";
 export const FIDO2SERVICE_AUTHORIZATION_PATH = "/php/api/authorize.php";
-export const FIDO2SERVICE_TRANSACTIONS_PATH = "/php/transactions.php";
-export const FIDO2SERVICE_LOGIN_PATH = "/php/login.php";
-export const FIDO2SERVICE_RESOURCE_PATH = "/php/resource.php";
 export const FIDO2SERVICE_DEREGISTER_PATH = "/php/api/deregister.php";
 
+// location of interfaces of the web application which are needed to automatically redirect the user
+export const FIDO2SERVICE_LOGIN_PATH = "/php/login.php";
+export const FIDO2SERVICE_RESOURCE_PATH = "/php/resource.php";
+
+
+// Constant values and utils functions
 let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 let lookup = new Uint8Array(256);
 for (let i = 0; i < chars.length; i++) {
   lookup[chars.charCodeAt(i)] = i;
 }
-
 const encode = function (arraybuffer) {
     let bytes = new Uint8Array(arraybuffer),
         i, len = bytes.length, base64url = '';
@@ -29,7 +33,7 @@ const encode = function (arraybuffer) {
         base64url += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
         base64url += chars[bytes[i + 2] & 63];
     }
-    
+
     if ((len % 3) === 2) {
         base64url = base64url.substring(0, base64url.length - 1);
     } else if (len % 3 === 1) {
@@ -37,7 +41,9 @@ const encode = function (arraybuffer) {
     }
     return base64url;
 };
-  
+export const custom_encode = function(arraybuffer){
+    return encode(arraybuffer);
+}
 const decode = function (base64string) {
     let bufferLength = base64string.length * 0.75,
     len = base64string.length, i, p = 0,
@@ -54,7 +60,9 @@ const decode = function (base64string) {
     }
     return bytes.buffer
 };
-
+export const custom_decode = function(base64string){
+    return decode(base64string);
+}
 export const challengeToBuffer = function(input) {
     input = JSON.parse(input);
     input.challenge = decode(input.challenge);
@@ -77,7 +85,6 @@ export const challengeToBuffer = function(input) {
     }
     return input;
 }
-
 export const responseToBase64 = function(input) {
     let copyOfDataResponse = {};
     copyOfDataResponse.id = input.id;
@@ -95,13 +102,16 @@ export const responseToBase64 = function(input) {
     return copyOfDataResponse;
 }
 
+
+// variables needed for the loading screen, to move the dots from 1 to 3
 let loading_counter;
 let interval;
 
+// showLoading handles the view or the hide of the loading screen. It wants as input a boolean: if true, the loading must be shown; if false, the loading must be hidden
 export const showLoading = function(show){
-    const dotsMove = function(){    
+    const dotsMove = function(){ // this function manages the motion of dots
         let dots = document.getElementById('dots');
-        switch(loading_counter){
+        switch(loading_counter){ // the motion depends on the value of a counter
             case 0:
                 dots.textContent = ".";
                 break;
@@ -113,42 +123,51 @@ export const showLoading = function(show){
                 break;
         }
     
-        if(loading_counter == 2) loading_counter = 0;
-        else loading_counter++;
+        if(loading_counter == 2) loading_counter = 0; // if the counter arrives to its maximum, then it is reset
+        else loading_counter++; // at the end of the function, the counter is incremented or reset
     }
-    const dotsClear = function(){
+
+    const dotsClear = function(){ // this function is needed once the loading screen is hidden, so that to clean the changes
         let dots = document.getElementById('dots');
         dots.textContent = '';
     }
-    if(show){
-        loading_counter = 0;
-        const loading = document.getElementById('loading');
-        loading.classList.remove('hidden');
-        interval = setInterval(dotsMove, 1000);
 
-        const navbar = document.getElementById('nav-bar');
-        navbar.classList.add('hidden');
-        navbar.classList.remove('nav-bar');
+    if(show){ // in case the loading screen must be shown
+        loading_counter = 0; // the loading counter is reset, so that the loading screen will always start with only one dot
+        const loading = document.getElementById('loading'); // taking the reference of the loading screen
+        loading.classList.remove('hidden'); // showing the loading screen
+        interval = setInterval(dotsMove, 1000); // setting the interval to 1000 milliseconds; every time this time passes, the dots will move
 
-        const bodylayout = document.getElementById('body-layout');
-        bodylayout.classList.add('hidden');
-        bodylayout.classList.remove('body-layout');
+        const navbar = document.getElementById('nav-bar'); // taking the reference of the nav bar
+        navbar.classList.add('hidden'); // hiding the nav bar
+        navbar.classList.remove('nav-bar'); // removing the nav-bar class
+
+        const bodylayout = document.getElementById('body-layout'); // taking the reference of the body-layout, the rest of the page
+        bodylayout.classList.add('hidden'); // hiding the body-layout
+        bodylayout.classList.remove('body-layout'); // removing the body-layout class
+
+        // now, the only viewable screen is the loading
     }
-    else{
-        clearInterval(interval);
-        dotsClear();
-        interval = null;
-        loading_counter = 0;
+    else{ // in case the loading screen must be hidden
+        clearInterval(interval); // the interval must stop working
+        dotsClear(); // the dots changes must be reset
+        interval = null; // the interval variable does not have to point to the previously interval
+        loading_counter = 0; // the loading counter is reset
 
+        // loading screen must be hidden
         const loading = document.getElementById('loading');
         loading.classList.add('hidden');
 
+        // nav bar must be shown
         const navbar = document.getElementById('nav-bar');
         navbar.classList.remove('hidden');
         navbar.classList.add('nav-bar');
 
+        // body layout must be shown
         const bodylayout = document.getElementById('body-layout');
         bodylayout.classList.remove('hidden');
         bodylayout.classList.add('body-layout');
+
+        // now, everything turns back how it was before
     }
-} 
+}
